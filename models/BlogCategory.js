@@ -1,0 +1,23 @@
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+
+const blogCategorySchema = new Schema({
+  name:{
+    type:String
+  },
+  url:{
+    type:String
+  },
+  description:{
+    type:String
+  },
+  image:{
+    type:String
+  },
+  imagethumb:{
+    type:String
+  }
+},{timestamps:true});
+
+const BlogCategory = mongoose.model('BlogCategory',blogCategorySchema);
+module.exports = BlogCategory;
