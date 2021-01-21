@@ -2,6 +2,7 @@ const {response} = require('express');
 const BlogCategory = require('../models/BlogCategory');
 const sharp = require('sharp');
 const { uuid } = require('uuidv4');
+const fs = require('fs');
 
 
 //SHOW ALL BLOG CATEGORIES
@@ -60,6 +61,14 @@ const store = (req,res) => {
       }
     })
 
+    sharp(req.file.path).rotate().resize(120, 120).toFile('uploads/blogcategoryimages/' + 'imagesmall-' + req.file.filename, (err, resizeImage) => {
+      if (err) {
+        console.log(err);
+      } else {
+        console.log(resizeImage);
+      }
+    })
+
     var urlLower = req.body.name.toLowerCase();
     var url = urlLower.replace(/ /g,'-');
 
@@ -69,6 +78,7 @@ const store = (req,res) => {
     blogcat.description= req.body.description;
     blogcat.image= req.file.path;
     blogcat.imagethumb= 'uploads/blogcategoryimages/' + 'thumbnails-' + req.file.filename;
+    blogcat.imagesmall= 'uploads/blogcategoryimages/' + 'imagesmall-' + req.file.filename;
     blogcat.save((err,doc)=>{
       if(!err){
         res.json({
@@ -95,7 +105,17 @@ const update = (req,res) => {
         console.log(resizeImage);
       }
     })
+
+    sharp(req.file.path).rotate().resize(120, 120).toFile('uploads/blogcategoryimages/' + 'imagesmall-' + req.file.filename, (err, resizeImage) => {
+      if (err) {
+        console.log(err);
+      } else {
+        console.log(resizeImage);
+      }
+    })
+
   }
+
 
   var id = req.body.id;
 
@@ -111,6 +131,7 @@ const update = (req,res) => {
   if(req.file){
     updateData.image= req.file.path;
     updateData.imagethumb= 'uploads/blogcategoryimages/' + 'thumbnails-' + req.file.filename;
+    updateData.imagesmall= 'uploads/blogcategoryimages/' + 'imagesmall-' + req.file.filename;
   }
 
   BlogCategory.findByIdAndUpdate(id,{$set:updateData})
@@ -127,6 +148,30 @@ const update = (req,res) => {
 const deletebc = (req,res) => {
   BlogCategory.findByIdAndRemove(req.params.id, (err,doc) => {
     if(!err){
+      // console.log(err);
+      // fs.unlink(req.file.image, (err) => {
+      //         if (err) {
+      //             console.log("failed to delete local image:"+err);
+      //         } else {
+      //             console.log('successfully deleted local image');
+      //         }
+      // });
+      // fs.unlink(req.file.imagethumb, (err) => {
+      //         if (err) {
+      //             console.log("failed to delete local image:"+err);
+      //         } else {
+      //             console.log('successfully deleted local image');
+      //         }
+      // });
+      // fs.unlink(req.file.imagesmall, (err) => {
+      //         if (err) {
+      //             console.log("failed to delete local image:"+err);
+      //         } else {
+      //             console.log('successfully deleted local image');
+      //         }
+      // });
+
+
       res.json({
         response:'true'
       })

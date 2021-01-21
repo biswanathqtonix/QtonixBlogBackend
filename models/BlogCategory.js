@@ -16,6 +16,9 @@ const blogCategorySchema = new Schema({
   },
   imagethumb:{
     type:String
+  },
+  imagesmall:{
+    type:String
   }
 },{timestamps:true});
 

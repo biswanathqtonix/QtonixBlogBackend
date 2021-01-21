@@ -86,6 +86,14 @@ const store = (req,res) => {
       }
     })
 
+    sharp(req.file.path).resize(120, 120).toFile('uploads/blogimages/' + 'imagesmall-' + req.file.filename, (err, resizeImage) => {
+      if (err) {
+        console.log(err);
+      } else {
+        console.log(resizeImage);
+      }
+    })
+
     // var urlLower = req.body.title.toLowerCase();
     // var url = urlLower.replace(/ /g,'-');
 
@@ -97,6 +105,7 @@ const store = (req,res) => {
     blog.description= req.body.description;
     blog.category= req.body.category;
     blog.imagethumb= 'uploads/blogimages/' + 'thumbnails-' + req.file.filename;
+    blog.imagesmall= 'uploads/blogimages/' + 'imagesmall-' + req.file.filename;
     blog.image= req.file.path;
     blog.content= req.body.content;
     blog.metatitle= req.body.metatitle;
@@ -165,6 +174,14 @@ const update = (req,res) => {
         console.log(resizeImage);
       }
     })
+
+    sharp(req.file.path).resize(120, 120).toFile('uploads/blogimages/' + 'imagesmall-' + req.file.filename, (err, resizeImage) => {
+      if (err) {
+        console.log(err);
+      } else {
+        console.log(resizeImage);
+      }
+    })
   }
 
   // var urlLower = req.body.title.toLowerCase();
@@ -186,7 +203,8 @@ const update = (req,res) => {
 
   if(req.file){
     updateData.image = req.file.path,
-    updateData.imagethumb = 'uploads/blogimages/' + 'thumbnails-' + req.file.filename
+    updateData.imagethumb = 'uploads/blogimages/' + 'thumbnails-' + req.file.filename,
+    updateData.imagesmall= 'uploads/blogimages/' + 'imagesmall-' + req.file.filename
   }
 
   Blog.findByIdAndUpdate(req.params.id, {$set:updateData})

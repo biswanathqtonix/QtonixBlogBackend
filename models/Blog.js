@@ -23,6 +23,9 @@ const blogsSchema = new Schema({
   imagethumb:{
     type:String
   },
+  imagesmall:{
+    type:String
+  },
   image:{
     type:String
   },
