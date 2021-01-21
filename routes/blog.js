@@ -21,11 +21,16 @@ const upload = multer({
 
 
 router.get('/',BlogController.index);
-router.get('/latest/:id',BlogController.latestblog);
+router.get('/latest/:no',BlogController.latestblog);
 
 router.get('/category/:categoryname',BlogController.viewcategorylist);
 
 router.get('/:id',BlogController.view);
+router.get('/viewbyurl/:url',BlogController.viewbyurl);
+router.get('/blogcategory-relatedarticle/:categoryname/:no',BlogController.relatedarticle);
+
+
+
 router.post('/',upload.single('image'),BlogController.store);
 router.put('/:id',upload.single('image'),BlogController.update);
 router.patch('/:id',BlogController.deleteblog);

@@ -16,7 +16,8 @@ const index = (req,res) => {
 
 //LATEST BLOGS
 const latestblog = (req,res) => {
-  Blog.find({},{'_id':1,'totalurl':1,'imagethumb':1,'title':1,'description':1}).sort({_id:-1}).limit(5).exec(function(err,response){
+  const no = Number(req.params.no);
+  Blog.find({},{'_id':1,'totalurl':1,'imagethumb':1,'title':1,'description':1}).sort({_id:-1}).limit(no).exec(function(err,response){
     if(!err){
       res.json({
         message:'success',
@@ -29,6 +30,31 @@ const latestblog = (req,res) => {
     }
   })
 }
+
+//RELATED ARTICLE BY CATEGORY
+const relatedarticle = (req,res) => {
+  const no = Number(req.params.no);
+  const getcategory = req.params.categoryname.replace(/\b\w/g, l => l.toUpperCase());
+
+  Blog. aggregate([
+    {$match:{category:getcategory}},
+    {$sample:{size:no}}
+  ]).sort({_id:-1}).exec(function(err,response){
+
+    if(!err){
+      res.json({
+        response:true,
+        data:response
+      })
+    }else{
+      res.json({
+        response:false
+      })
+    }
+  })
+}
+
+
 
 const viewcategorylist = (req,res) => {
   Blog.find({category:req.params.categoryname.replace(/\b\w/g, l => l.toUpperCase())}).sort({createdAt:-1})
@@ -45,6 +71,9 @@ const viewcategorylist = (req,res) => {
     }
   })
 }
+
+
+
 
 //STORE BLOG
 const store = (req,res) => {
@@ -89,6 +118,26 @@ const store = (req,res) => {
     })
 }
 
+//VIEW BY URL
+const viewbyurl = (req,res) => {
+  Blog.findOne({blogurl:req.params.url}, (err,doc)=>{
+    if(!err){
+      res.json({
+        response:true,
+        data:doc,
+      })
+    }else{
+      res.json({
+        response:false
+      })
+    }
+  })
+}
+
+
+
+
+//VIEW
 const view = (req,res) => {
   Blog.findById(req.params.id,(err,doc) => {
     if(!err){
@@ -104,6 +153,8 @@ const view = (req,res) => {
   })
 }
 
+
+//UPDATE
 const update = (req,res) => {
 
   if(req.file){
@@ -165,5 +216,5 @@ const deleteblog = (req,res) => {
 
 // **MODULE EXPORTS**
 module.exports = {
-  index,store,view,update,deleteblog,viewcategorylist,latestblog
+  index,store,view,update,deleteblog,viewcategorylist,latestblog,viewbyurl,relatedarticle
 }
