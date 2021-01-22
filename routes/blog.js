@@ -21,6 +21,7 @@ const upload = multer({
 
 
 router.get('/',BlogController.index);
+
 router.get('/latest/:no',BlogController.latestblog);
 
 router.get('/category/:categoryname',BlogController.viewcategorylist);
