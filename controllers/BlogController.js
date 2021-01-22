@@ -1,6 +1,7 @@
 const {response} = require('express');
 const Blog = require('../models/Blog');
 const sharp = require('sharp');
+const fs = require('fs');
 
 
 //SHOW ALL BLOGS
@@ -217,17 +218,60 @@ const update = (req,res) => {
 
 
 const deleteblog = (req,res) => {
-  Blog.findByIdAndRemove(req.params.id,(err,doc)=>{
+
+
+  Blog.findById(req.params.id,(err,doc) => {
     if(!err){
-      res.json({
-        response:'true'
+
+
+      //REMOVE IMAMGES
+      fs.unlink(doc.image, (err) => {
+          if (err) {
+            console.log("failed to delete local image:"+err);
+          } else {
+            console.log('successfully deleted local image');
+          }
+      });
+      fs.unlink(doc.imagethumb, (err) => {
+          if (err) {
+            console.log("failed to delete local image:"+err);
+          } else {
+            console.log('successfully deleted local image');
+          }
+      });
+      fs.unlink(doc.imagesmall, (err) => {
+          if (err) {
+            console.log("failed to delete local image:"+err);
+          } else {
+            console.log('successfully deleted local image');
+          }
+      });
+
+      //DELETE DATA
+      Blog.findByIdAndRemove(req.params.id,(err,doc)=>{
+        if(!err){
+          res.json({
+            response:'true'
+          })
+        }else{
+          res.json({
+            response:'false'
+          })
+        }
       })
+
+
+
     }else{
       res.json({
         response:'false'
       })
     }
   })
+
+
+
+
 }
 
 

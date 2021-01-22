@@ -146,35 +146,42 @@ const update = (req,res) => {
 
 //DELETE
 const deletebc = (req,res) => {
-  BlogCategory.findByIdAndRemove(req.params.id, (err,doc) => {
+  BlogCategory.findOne({_id:req.params.id},(err,doc)=>{
     if(!err){
-      // console.log(err);
-      // fs.unlink(req.file.image, (err) => {
-      //         if (err) {
-      //             console.log("failed to delete local image:"+err);
-      //         } else {
-      //             console.log('successfully deleted local image');
-      //         }
-      // });
-      // fs.unlink(req.file.imagethumb, (err) => {
-      //         if (err) {
-      //             console.log("failed to delete local image:"+err);
-      //         } else {
-      //             console.log('successfully deleted local image');
-      //         }
-      // });
-      // fs.unlink(req.file.imagesmall, (err) => {
-      //         if (err) {
-      //             console.log("failed to delete local image:"+err);
-      //         } else {
-      //             console.log('successfully deleted local image');
-      //         }
-      // });
-
-
-      res.json({
-        response:'true'
-      })
+        //REMOVE IMAMGES
+        fs.unlink(doc.image, (err) => {
+            if (err) {
+              console.log("failed to delete local image:"+err);
+            } else {
+              console.log('successfully deleted local image');
+            }
+        });
+        fs.unlink(doc.imagethumb, (err) => {
+            if (err) {
+              console.log("failed to delete local image:"+err);
+            } else {
+              console.log('successfully deleted local image');
+            }
+        });
+        fs.unlink(doc.imagesmall, (err) => {
+            if (err) {
+              console.log("failed to delete local image:"+err);
+            } else {
+              console.log('successfully deleted local image');
+            }
+        });
+        //DELETE DATA
+        BlogCategory.findByIdAndRemove(req.params.id, (err,doc) => {
+          if(!err){
+            res.json({
+              response:'true'
+            })
+          }else{
+            res.json({
+              response:'false'
+            })
+          }
+        })
     }else{
       res.json({
         response:'false'
