@@ -21,6 +21,29 @@ const index = (req,res) => {
 }
 
 
+//VIEW PAGE BY URL
+const viewpagebyurl = (req,res) => {
+
+  var url='/'+req.params.pageurl;
+
+  Page.findOne({url:url},(err,doc)=>{
+    if(!err){
+      res.json({
+        response:true,
+        data:doc
+      })
+    }else{
+      res.json({
+        response:false,
+        data:false
+      })
+    }
+  })
+
+
+}
+
+
 //VIEW PAGE
 const view = (req,res) => {
   Page.findById(req.params.id,(err,doc)=>{
@@ -108,4 +131,4 @@ const remove = (req,res) => {
   })
 }
 
-module.exports = {index,view,store,update,remove};
+module.exports = {index,view,store,update,remove,viewpagebyurl};
