@@ -1,6 +1,7 @@
 const {response} = require('express');
 const Blog = require('../models/Blog');
 const BlogCategory = require('../models/BlogCategory');
+const Page = require('../models/Page');
 
 const sharp = require('sharp');
 const fs = require('fs');
@@ -21,18 +22,18 @@ const index = (req,res) => {
 const homepage = async (req,res) => {
 
 
-
-
   var latest4blog = await Blog.find().sort({_id:-1}).limit(4);
   var random6blog = await Blog.aggregate([{$sample:{size:6}}]);
   var blogcategory5random = await BlogCategory.aggregate([{$sample:{size:6}}]);
   var blogcategory5random4getblog = await Blog.aggregate([{$match:{category:blogcategory5random[0].name}}]).sort({_id:-1}).limit(4);
+  var seohome = await Page.findOne({name:'Home'});
 
   res.json({
     latest4blog:latest4blog,
     random6blog:random6blog,
     blogcategory5random:blogcategory5random,
-    blogcategory5random4getblog:blogcategory5random4getblog
+    blogcategory5random4getblog:blogcategory5random4getblog,
+    seohome:seohome
   })
 }
 
