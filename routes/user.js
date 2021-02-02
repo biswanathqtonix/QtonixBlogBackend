@@ -23,6 +23,14 @@ router.get('/logindetails',UserController.logindetails);
 router.get('/logindetails/:id',UserController.logindetailsview);
 
 
+//WEBSITE
+router.post('/userregister',UserController.userregister);
+router.post('/socialloginregister',UserController.socialloginregister);
+
+//WEBSITE
+
+
+
 router.get('/',UserController.index);
 router.post('/',upload.single('image'),UserController.store);
 router.put('/:id',upload.single('image'),UserController.update);

@@ -91,6 +91,88 @@ const store = (req,res) => {
 
 }
 
+
+//userregister
+const userregister = (req,res) => {
+  User.find({email: req.body.email}, (err,doc)=>{
+          if(!err){
+            if(doc.length>0){
+              res.json({
+                response:true,
+                message:'Email Available'
+              })
+            }else{
+              var user = new User();
+              user.name=req.body.name;
+              user.email=req.body.email;
+              user.password=req.body.password;
+              user.save((err,doc)=>{
+                if(!err){
+                  res.json({
+                    response:true,
+                    message:'Registration Success'
+                  })
+                }else{
+                  res.json({
+                    response:false,
+                    message:'=Failed'
+                  })
+                }
+              })
+            }
+          }else{
+            res.json({
+              message:'failed'
+            })
+          }
+        })
+}
+
+
+
+//socialloginregister
+const socialloginregister = (req,res) => {
+  User.find({email: req.body.email}, (err,doc)=>{
+          if(!err){
+            if(doc.length>0){
+              res.json({
+                response:true,
+                data:doc,
+                message:'Email Available'
+              })
+            }else{
+              var user = new User();
+              user.name=req.body.name;
+              user.email=req.body.email;
+              user.password=req.body.password;
+              user.image=req.body.password;
+              user.imagethumb=req.body.password;
+              user.imagemedium=req.body.password;
+              user.imagemedium=req.body.password;
+              user.save((err,doc)=>{
+                if(!err){
+                  res.json({
+                    response:true,
+                    data:doc,
+                    message:'Registration Success'
+                  })
+                }else{
+                  res.json({
+                    response:false,
+                    message:'=Failed'
+                  })
+                }
+              })
+            }
+          }else{
+            res.json({
+              message:'failed'
+            })
+          }
+      })
+}
+
+
 //VIEW
 const view = (req,res) => {
 
@@ -324,6 +406,4 @@ const forgotpassword = (req,res) => {
 
 
 // **MODULE EXPORTS**
-module.exports = {
-  index, store, update,deleteuser, login, forgotpassword, view, logindetails, logindetailsview
-}
+module.exports = {index, store, update,deleteuser, login, forgotpassword, view, logindetails, logindetailsview, userregister,socialloginregister}
