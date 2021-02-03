@@ -106,6 +106,7 @@ const userregister = (req,res) => {
               user.name=req.body.name;
               user.email=req.body.email;
               user.password=req.body.password;
+              user.email_verify='Not Verified';
               user.save((err,doc)=>{
                 if(!err){
                   res.json({
@@ -149,6 +150,7 @@ const socialloginregister = (req,res) => {
               user.imagethumb=req.body.profilePicURL;
               user.imagemedium=req.body.profilePicURL;
               user.imagemedium=req.body.profilePicURL;
+              user.email_verify='Verified';
               user.save((err,doc)=>{
                 if(!err){
                   res.json({
