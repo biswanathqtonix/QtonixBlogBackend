@@ -115,7 +115,7 @@ const userregister = (req,res) => {
                 }else{
                   res.json({
                     response:false,
-                    message:'=Failed'
+                    message:'Failed'
                   })
                 }
               })
@@ -138,17 +138,17 @@ const socialloginregister = (req,res) => {
               res.json({
                 response:true,
                 data:doc,
-                message:'Email Available'
+                message:'Login Success'
               })
             }else{
               var user = new User();
               user.name=req.body.name;
               user.email=req.body.email;
               user.password=req.body.password;
-              user.image=req.body.password;
-              user.imagethumb=req.body.password;
-              user.imagemedium=req.body.password;
-              user.imagemedium=req.body.password;
+              user.image=req.body.profilePicURL;
+              user.imagethumb=req.body.profilePicURL;
+              user.imagemedium=req.body.profilePicURL;
+              user.imagemedium=req.body.profilePicURL;
               user.save((err,doc)=>{
                 if(!err){
                   res.json({
