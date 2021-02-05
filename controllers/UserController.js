@@ -225,7 +225,6 @@ const update = (req,res) => {
 
   let updatedData = {
     name:req.body.name,
-    email:req.body.email,
     contact:req.body.contact,
     usertype:req.body.usertype,
     city:req.body.city,
@@ -241,7 +240,8 @@ const update = (req,res) => {
   User.findByIdAndUpdate(req.params.id, {$set: updatedData})
   .then(response=>{
     res.json({
-      response:'true'
+      response:'true',
+      data:[response]
     })
   })
 
