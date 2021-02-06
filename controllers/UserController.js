@@ -272,19 +272,9 @@ const update = (req,res) => {
 
 const userupdate = (req,res) => {
 
-  // if(req.file){
-  //   sharp(req.file.path).rotate().resize(150, 150).toFile('uploads/userimages/' + 'small-' + req.file.filename, (err, resizeImage) => {
-  //     if (err) {
-  //       console.log(err);
-  //     } else {
-  //       console.log(resizeImage);
-  //     }
-  //   })
-  // }
-
-
   let updatedData = {
     name:req.body.name,
+    email:req.body.email,
     contact:req.body.contact,
     password:req.body.password,
     city:req.body.city,
@@ -292,19 +282,25 @@ const userupdate = (req,res) => {
     country:req.body.country,
   }
 
-
-  // if(req.file){
-  //   updatedData.image = req.file.path;
-  //   updatedData.imagethumb = 'uploads/userimages/' + 'small-'+ req.file.filename;
-  // }
-
-
   User.findByIdAndUpdate(req.params.id, {$set: updatedData})
   .then(response=>{
-    res.json({
-      response:'true',
-      data:updatedData
+
+    User.findById(req.params.id, (err,doc) => {
+      if(!err){
+        res.json({
+          response:'true',
+          data:doc
+        })
+      }else{
+        res.json({
+          response:'false',
+        })
+      }
     })
+
+
+
+
   })
 }
 
