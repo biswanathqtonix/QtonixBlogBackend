@@ -145,8 +145,8 @@ const socialloginregister = (req,res) => {
               })
             }else{
               var user = new User();
-              user.usertype="User";
               user.email_verify="Verified";
+              user.usertype='User';
               user.name=req.body.name;
               user.email=req.body.email;
               user.password=req.body.password;
@@ -200,19 +200,6 @@ const view = (req,res) => {
 //UPDATE
 const update = (req,res) => {
 
-  // let updatedData = {
-  //   name:req.body.name,
-  //   contact:req.body.contact,
-  //   usertype:req.body.usertype,
-  //   city:req.body.city,
-  //   state:req.body.state,
-  //   country:req.body.country,
-  // }
-  //
-  //
-  // console.log(updatedData);
-
-
   if(req.file){
     sharp(req.file.path).rotate().resize(150, 150).toFile('uploads/userimages/' + 'small-' + req.file.filename, (err, resizeImage) => {
       if (err) {
@@ -221,22 +208,6 @@ const update = (req,res) => {
         console.log(resizeImage);
       }
     })
-
-    // sharp(req.file.path).rotate().resize(400, 200).toFile('uploads/userimages/' + 'medium-' + req.file.filename, (err, resizeImage) => {
-    //   if (err) {
-    //     console.log(err);
-    //   } else {
-    //     console.log(resizeImage);
-    //   }
-    // })
-    //
-    // sharp(req.file.path).rotate().resize(1200, 800).toFile('uploads/userimages/' + 'large-' + req.file.filename, (err, resizeImage) => {
-    //   if (err) {
-    //     console.log(err);
-    //   } else {
-    //     console.log(resizeImage);
-    //   }
-    // })
   }
 
 
@@ -268,8 +239,51 @@ const update = (req,res) => {
 }
 
 
+//UPDATE WEBSITE USER IMAGE
+const userimageupdate = (req,res) => {
+
+  if(req.file){
+    sharp(req.file.path).rotate().resize(150, 150).toFile('uploads/userimages/' + 'small-' + req.file.filename, (err, resizeImage) => {
+      if (err) {
+        console.log(err);
+      } else {
+        console.log(resizeImage);
+      }
+    })
+  }
 
 
+  let updatedData = {}
+
+  if(req.file){
+    updatedData.image = req.file.path;
+    updatedData.imagethumb = process.env.WEBSITE+'/uploads/userimages/' + 'small-'+ req.file.filename;
+  }
+
+
+  User.findByIdAndUpdate(req.params.id, {$set: updatedData})
+  .then(response=>{
+
+    User.findById(req.params.id, (err,doc) => {
+      if(!err){
+        res.json({
+          response:'true',
+          data:doc
+        })
+      }else{
+        res.json({
+          response:'false',
+        })
+      }
+    })
+
+  })
+
+
+}
+
+
+//UPDATE WEBSITE USER DETAILS
 const userupdate = (req,res) => {
 
   let updatedData = {
@@ -377,7 +391,6 @@ const login = (req,res) => {
           data:doc
         })
 
-
       }
 
     }else{
@@ -467,4 +480,4 @@ const forgotpassword = (req,res) => {
 
 
 // **MODULE EXPORTS**
-module.exports = {index, store, update,deleteuser, login, forgotpassword, view, logindetails, logindetailsview, userregister,socialloginregister,userupdate}
+module.exports = {index, store, update,deleteuser, login, forgotpassword, view, logindetails, logindetailsview, userregister,socialloginregister,userupdate,userimageupdate}

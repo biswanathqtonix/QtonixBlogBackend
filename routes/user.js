@@ -27,6 +27,8 @@ router.get('/logindetails/:id',UserController.logindetailsview);
 router.post('/userregister',UserController.userregister);
 router.post('/socialloginregister',UserController.socialloginregister);
 router.put('/userupdate/:id',UserController.userupdate);
+router.put('/userimageupdate/:id',upload.single('image'),UserController.userimageupdate);
+
 //WEBSITE
 
 
