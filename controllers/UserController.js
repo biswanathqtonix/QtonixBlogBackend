@@ -68,6 +68,7 @@ const store = (req,res) => {
   user.contact = req.body.contact;
   user.password = req.body.password;
   user.usertype = req.body.usertype;
+  user.email_verify='Verified';
   user.city = req.body.city;
   user.state = req.body.state;
   user.country = req.body.country;
@@ -107,6 +108,7 @@ const userregister = (req,res) => {
               user.email=req.body.email;
               user.password=req.body.password;
               user.email_verify='Not Verified';
+              user.usertype='User';
               user.save((err,doc)=>{
                 if(!err){
                   res.json({
@@ -138,11 +140,13 @@ const socialloginregister = (req,res) => {
             if(doc.length>0){
               res.json({
                 response:true,
-                data:doc,
+                data:doc[0],
                 message:'Login Success'
               })
             }else{
               var user = new User();
+              user.usertype="User";
+              user.email_verify="Verified";
               user.name=req.body.name;
               user.email=req.body.email;
               user.password=req.body.password;
@@ -150,7 +154,6 @@ const socialloginregister = (req,res) => {
               user.imagethumb=req.body.profilePicURL;
               user.imagemedium=req.body.profilePicURL;
               user.imagemedium=req.body.profilePicURL;
-              user.email_verify='Verified';
               user.save((err,doc)=>{
                 if(!err){
                   res.json({
@@ -161,7 +164,7 @@ const socialloginregister = (req,res) => {
                 }else{
                   res.json({
                     response:false,
-                    message:'=Failed'
+                    message:'Failed'
                   })
                 }
               })
@@ -197,6 +200,19 @@ const view = (req,res) => {
 //UPDATE
 const update = (req,res) => {
 
+  // let updatedData = {
+  //   name:req.body.name,
+  //   contact:req.body.contact,
+  //   usertype:req.body.usertype,
+  //   city:req.body.city,
+  //   state:req.body.state,
+  //   country:req.body.country,
+  // }
+  //
+  //
+  // console.log(updatedData);
+
+
   if(req.file){
     sharp(req.file.path).rotate().resize(150, 150).toFile('uploads/userimages/' + 'small-' + req.file.filename, (err, resizeImage) => {
       if (err) {
@@ -223,29 +239,76 @@ const update = (req,res) => {
     // })
   }
 
+
   let updatedData = {
     name:req.body.name,
     contact:req.body.contact,
     usertype:req.body.usertype,
     city:req.body.city,
     state:req.body.state,
-    country:req.body.country,
+    country:req.body.country
   }
+
 
   if(req.file){
     updatedData.image = req.file.path;
     updatedData.imagethumb = 'uploads/userimages/' + 'small-'+ req.file.filename;
   }
 
+
   User.findByIdAndUpdate(req.params.id, {$set: updatedData})
   .then(response=>{
     res.json({
       response:'true',
-      data:[response]
+      data:response
     })
   })
 
+
 }
+
+
+
+
+const userupdate = (req,res) => {
+
+  // if(req.file){
+  //   sharp(req.file.path).rotate().resize(150, 150).toFile('uploads/userimages/' + 'small-' + req.file.filename, (err, resizeImage) => {
+  //     if (err) {
+  //       console.log(err);
+  //     } else {
+  //       console.log(resizeImage);
+  //     }
+  //   })
+  // }
+
+
+  let updatedData = {
+    name:req.body.name,
+    contact:req.body.contact,
+    password:req.body.password,
+    city:req.body.city,
+    state:req.body.state,
+    country:req.body.country,
+  }
+
+
+  // if(req.file){
+  //   updatedData.image = req.file.path;
+  //   updatedData.imagethumb = 'uploads/userimages/' + 'small-'+ req.file.filename;
+  // }
+
+
+  User.findByIdAndUpdate(req.params.id, {$set: updatedData})
+  .then(response=>{
+    res.json({
+      response:'true',
+      data:updatedData
+    })
+  })
+}
+
+
 
 
 const deleteuser = (req,res) => {
@@ -408,4 +471,4 @@ const forgotpassword = (req,res) => {
 
 
 // **MODULE EXPORTS**
-module.exports = {index, store, update,deleteuser, login, forgotpassword, view, logindetails, logindetailsview, userregister,socialloginregister}
+module.exports = {index, store, update,deleteuser, login, forgotpassword, view, logindetails, logindetailsview, userregister,socialloginregister,userupdate}
