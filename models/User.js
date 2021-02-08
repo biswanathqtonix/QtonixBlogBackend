@@ -12,6 +12,9 @@ const usersSchema = new Schema({
   email_verify:{
     type:String
   },
+  email_code:{
+    type:String
+  },
   image:{
     type:String
   },

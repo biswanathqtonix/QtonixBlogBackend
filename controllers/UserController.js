@@ -3,6 +3,7 @@ const {response} = require('express');
 const User = require('../models/User');
 const LoginDetails = require('../models/LoginDetails');
 const sharp = require('sharp');
+const { v4: uuidv4 } = require('uuid');
 
 const nodemailer = require('nodemailer');
 const Email = require('email-templates');
@@ -45,23 +46,6 @@ const store = (req,res) => {
       }
     })
 
-    // sharp(req.file.path).rotate().resize(400, 200).toFile('uploads/userimages/' + 'medium-' + req.file.filename, (err, resizeImage) => {
-    //   if (err) {
-    //     console.log(err);
-    //   } else {
-    //     console.log(resizeImage);
-    //   }
-    // })
-    //
-    // sharp(req.file.path).rotate().resize(1200, 800).toFile('uploads/userimages/' + 'large-' + req.file.filename, (err, resizeImage) => {
-    //   if (err) {
-    //     console.log(err);
-    //   } else {
-    //     console.log(resizeImage);
-    //   }
-    // })
-
-
   var user = new User();
   user.name = req.body.name;
   user.email = req.body.email;
@@ -69,6 +53,7 @@ const store = (req,res) => {
   user.password = req.body.password;
   user.usertype = req.body.usertype;
   user.email_verify='Verified';
+  user.email_code=uuidv4()+uuidv4()+uuidv4()+uuidv4();
   user.city = req.body.city;
   user.state = req.body.state;
   user.country = req.body.country;
@@ -108,6 +93,7 @@ const userregister = (req,res) => {
               user.email=req.body.email;
               user.password=req.body.password;
               user.email_verify='Not Verified';
+              user.email_code=uuidv4()+uuidv4()+uuidv4()+uuidv4();
               user.usertype='User';
               user.save((err,doc)=>{
                 if(!err){
@@ -146,6 +132,7 @@ const socialloginregister = (req,res) => {
             }else{
               var user = new User();
               user.email_verify="Verified";
+              user.email_code=uuidv4()+uuidv4()+uuidv4()+uuidv4();
               user.usertype='User';
               user.name=req.body.name;
               user.email=req.body.email;
@@ -210,7 +197,6 @@ const update = (req,res) => {
     })
   }
 
-
   let updatedData = {
     name:req.body.name,
     contact:req.body.contact,
@@ -220,12 +206,10 @@ const update = (req,res) => {
     country:req.body.country
   }
 
-
   if(req.file){
     updatedData.image = req.file.path;
     updatedData.imagethumb = 'uploads/userimages/' + 'small-'+ req.file.filename;
   }
-
 
   User.findByIdAndUpdate(req.params.id, {$set: updatedData})
   .then(response=>{
@@ -234,8 +218,6 @@ const update = (req,res) => {
       data:response
     })
   })
-
-
 }
 
 
@@ -252,14 +234,11 @@ const userimageupdate = (req,res) => {
     })
   }
 
-
   let updatedData = {}
-
   if(req.file){
     updatedData.image = req.file.path;
     updatedData.imagethumb = process.env.WEBSITE+'/uploads/userimages/' + 'small-'+ req.file.filename;
   }
-
 
   User.findByIdAndUpdate(req.params.id, {$set: updatedData})
   .then(response=>{
@@ -276,10 +255,7 @@ const userimageupdate = (req,res) => {
         })
       }
     })
-
   })
-
-
 }
 
 
@@ -311,9 +287,6 @@ const userupdate = (req,res) => {
         })
       }
     })
-
-
-
 
   })
 }
@@ -479,5 +452,82 @@ const forgotpassword = (req,res) => {
 }
 
 
+
+
+
+
+const emailverificationcodesend = (req,res) => {
+  const user = req.body;
+
+  User.findById(user.id,(err,doc)=>{
+    if(!err){
+
+      // email.send({
+      //   template:'emailverification',
+      //   message:{
+      //     from:process.env.EMAIL_USER,
+      //     to:user.email,
+      //     attachments: [
+      //       {
+      //         filename: 'thankyou.docx',
+      //         content: 'Thanks'
+      //       }
+      //     ],
+      //     locals:{
+      //       website:process.env.APP_NAME,
+      //       websiteurl:process.env.APP_WEBSITEURL,
+      //       name:doc.name,
+      //       email:doc.email,
+      //       verifycode:doc.email_code,
+      //       url:process.env.APP_WEBSITEURL+'/emailverification/'+doc.email_code
+      //     }
+      //   }
+      // })
+
+
+
+      email.send({
+    template: 'hello',
+    message: {
+      from: process.env.EMAIL_USER,
+      to: req.body.email,
+      // attachments: [
+      //   {
+      //     filename: 'thankyou.docx',
+      //     content: 'Thanks'
+      //   }
+      // ]
+    },
+    locals: {
+      fname: 'John',
+      lname: 'Snow',
+    }
+	}).then(() => console.log('email has been sent!'));
+
+
+
+
+      res.json({
+        response:true,
+        data:doc,
+        url:process.env.APP_WEBSITEURL+'/emailverification/'+doc.email_code
+      })
+    }else{
+      res.json({
+        response:false
+      })
+    }
+  })
+
+
+  // res.json({
+  //   email:user.email,
+  //   id:user.id,
+  //   uniqueid:uuidv4()+uuidv4()+uuidv4()+uuidv4()
+  // })
+
+}
+
+
 // **MODULE EXPORTS**
-module.exports = {index, store, update,deleteuser, login, forgotpassword, view, logindetails, logindetailsview, userregister,socialloginregister,userupdate,userimageupdate}
+module.exports = {index, store, update,deleteuser, login, forgotpassword, view, logindetails, logindetailsview, userregister, socialloginregister, userupdate, userimageupdate, emailverificationcodesend}
