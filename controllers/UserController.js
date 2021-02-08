@@ -53,7 +53,7 @@ const store = (req,res) => {
   user.password = req.body.password;
   user.usertype = req.body.usertype;
   user.email_verify='Verified';
-  user.email_code=uuidv4()+uuidv4()+uuidv4()+uuidv4();
+  user.email_code=Math.floor(100000 + Math.random() * 900000);
   user.city = req.body.city;
   user.state = req.body.state;
   user.country = req.body.country;
@@ -84,7 +84,7 @@ const userregister = (req,res) => {
           if(!err){
             if(doc.length>0){
               res.json({
-                response:true,
+                response:false,
                 message:'Email Available'
               })
             }else{
@@ -93,7 +93,7 @@ const userregister = (req,res) => {
               user.email=req.body.email;
               user.password=req.body.password;
               user.email_verify='Not Verified';
-              user.email_code=uuidv4()+uuidv4()+uuidv4()+uuidv4();
+              user.email_code=Math.floor(100000 + Math.random() * 900000);
               user.usertype='User';
               user.save((err,doc)=>{
                 if(!err){
@@ -132,7 +132,7 @@ const socialloginregister = (req,res) => {
             }else{
               var user = new User();
               user.email_verify="Verified";
-              user.email_code=uuidv4()+uuidv4()+uuidv4()+uuidv4();
+              user.email_code=Math.floor(100000 + Math.random() * 900000);
               user.usertype='User';
               user.name=req.body.name;
               user.email=req.body.email;
@@ -462,56 +462,35 @@ const emailverificationcodesend = (req,res) => {
   User.findById(user.id,(err,doc)=>{
     if(!err){
 
-      // email.send({
-      //   template:'emailverification',
-      //   message:{
-      //     from:process.env.EMAIL_USER,
-      //     to:user.email,
-      //     attachments: [
-      //       {
-      //         filename: 'thankyou.docx',
-      //         content: 'Thanks'
-      //       }
-      //     ],
-      //     locals:{
-      //       website:process.env.APP_NAME,
-      //       websiteurl:process.env.APP_WEBSITEURL,
-      //       name:doc.name,
-      //       email:doc.email,
-      //       verifycode:doc.email_code,
-      //       url:process.env.APP_WEBSITEURL+'/emailverification/'+doc.email_code
-      //     }
-      //   }
-      // })
-
-
-
       email.send({
-    template: 'hello',
-    message: {
-      from: process.env.EMAIL_USER,
-      to: req.body.email,
-      // attachments: [
-      //   {
-      //     filename: 'thankyou.docx',
-      //     content: 'Thanks'
-      //   }
-      // ]
-    },
-    locals: {
-      fname: 'John',
-      lname: 'Snow',
-    }
-	}).then(() => console.log('email has been sent!'));
-
-
-
+        template:'emailverification',
+        message:{
+          from:process.env.EMAIL_USER,
+          to:user.email,
+          // attachments: [
+          //   {
+          //     filename: 'thankyou.docx',
+          //     content: 'Thanks'
+          //   }
+          // ],
+          locals:{
+            website:process.env.APP_NAME,
+            websiteurl:process.env.APP_WEBSITEURL,
+            name:doc.name,
+            email:doc.email,
+            verifycode:doc.email_code,
+            url:process.env.APP_WEBSITEURL+'/emailverification/'+doc.email_code
+          }
+        }
+      }).then(() => console.log('email has been sent!'));
 
       res.json({
         response:true,
+        message:'Email send',
         data:doc,
         url:process.env.APP_WEBSITEURL+'/emailverification/'+doc.email_code
       })
+
     }else{
       res.json({
         response:false
@@ -529,5 +508,60 @@ const emailverificationcodesend = (req,res) => {
 }
 
 
+const verifyemailcode = (req, res) => {
+  const user = req.body;
+
+  User.findOne({
+    _id:user.id,
+    email_code:user.code
+  },(err,doc)=>{
+    if(!err){
+
+      if(doc===null){
+        res.json({
+          response:false
+        })
+      }else{
+
+        var udata={
+          email_verify:'Verified'
+        }
+
+        User.findByIdAndUpdate(user.id,{$set:udata},(err,docn)=>{
+          if(!err){
+            res.json({
+              response:true,
+              data:docn
+            })
+          }else{
+            res.json({
+              response:false
+            })
+          }
+        })
+
+      }
+
+    }else{
+      res.json({
+        response:false
+      })
+    }
+  })
+
+  // User.findById(user.id,(err,doc)=>{
+  //   if(!err){
+  //     res.json({
+  //       response:true,
+  //       data:doc
+  //     })
+  //   }
+  // })
+
+}
+
+
+
+
 // **MODULE EXPORTS**
-module.exports = {index, store, update,deleteuser, login, forgotpassword, view, logindetails, logindetailsview, userregister, socialloginregister, userupdate, userimageupdate, emailverificationcodesend}
+module.exports = {index, store, update,deleteuser, login, forgotpassword, view, logindetails, logindetailsview, userregister, socialloginregister, userupdate, userimageupdate, emailverificationcodesend, verifyemailcode}

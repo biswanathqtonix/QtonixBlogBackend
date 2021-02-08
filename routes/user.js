@@ -29,6 +29,8 @@ router.post('/socialloginregister',UserController.socialloginregister);
 router.put('/userupdate/:id',UserController.userupdate);
 router.put('/userimageupdate/:id',upload.single('image'),UserController.userimageupdate);
 router.post('/send-email-verification-code',UserController.emailverificationcodesend);
+
+router.post('/verify-email-code',UserController.verifyemailcode);
 //WEBSITE
 
 
