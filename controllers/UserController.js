@@ -421,23 +421,39 @@ const forgotpassword = (req,res) => {
         })
       }else{
 
+        // email.send({
+        //   template: 'hello',
+        //   message: {
+        //     from: process.env.EMAIL_USER,
+        //     to: req.params.email,
+        //     // attachments: [
+        //     //   {
+        //     //     filename: 'thankyou.docx',
+        //     //     content: 'Thanks'
+        //     //   }
+        //     // ]
+        //   },
+        //   locals: {
+        //     name: doc.name,
+        //     password:doc.password
+        //   }
+      	// }).then(() => console.log('email has been sent!'));
+
+
+
         email.send({
-          template: 'hello',
-          message: {
-            from: process.env.EMAIL_USER,
-            to: req.params.email,
-            // attachments: [
-            //   {
-            //     filename: 'thankyou.docx',
-            //     content: 'Thanks'
-            //   }
-            // ]
+          template:'emailpassword',
+          message:{
+            from:process.env.APP_NAME+' '+process.env.EMAIL_USER,
+            to:req.params.email
           },
-          locals: {
-            name: doc.name,
+          locals:{
+            name:doc.name,
             password:doc.password
           }
-      	}).then(() => console.log('email has been sent!'));
+        }).then(()=>console.log('Email has been sent!'));
+
+
 
         res.json({
           response:'true',
@@ -462,25 +478,40 @@ const emailverificationcodesend = (req,res) => {
   User.findById(user.id,(err,doc)=>{
     if(!err){
 
+      // email.send({
+      //   template:'emailverification',
+      //   message:{
+      //     from:process.env.EMAIL_USER,
+      //     to:user.email,
+      //     // attachments: [
+      //     //   {
+      //     //     filename: 'thankyou.docx',
+      //     //     content: 'Thanks'
+      //     //   }
+      //     // ],
+      //     locals:{
+      //       website:process.env.APP_NAME,
+      //       websiteurl:process.env.APP_WEBSITEURL,
+      //       name:doc.name,
+      //       email:doc.email,
+      //       verifycode:doc.email_code,
+      //       url:process.env.APP_WEBSITEURL+'/emailverification/'+doc.email_code
+      //     }
+      //   }
+      // }).then(() => console.log('email has been sent!'));
+
+
       email.send({
-        template:'emailverification',
-        message:{
-          from:process.env.EMAIL_USER,
+        template: 'emailverification',
+        message: {
+          from:process.env.APP_NAME+' '+process.env.EMAIL_USER,
           to:user.email,
-          // attachments: [
-          //   {
-          //     filename: 'thankyou.docx',
-          //     content: 'Thanks'
-          //   }
-          // ],
-          locals:{
-            website:process.env.APP_NAME,
-            websiteurl:process.env.APP_WEBSITEURL,
-            name:doc.name,
-            email:doc.email,
-            verifycode:doc.email_code,
-            url:process.env.APP_WEBSITEURL+'/emailverification/'+doc.email_code
-          }
+        },
+        locals: {
+          name:doc.name,
+          verifycode:doc.email_code,
+          fname: 'John',
+          lname: 'Snow',
         }
       }).then(() => console.log('email has been sent!'));
 
@@ -488,6 +519,7 @@ const emailverificationcodesend = (req,res) => {
         response:true,
         message:'Email send',
         data:doc,
+        id:user.id,
         url:process.env.APP_WEBSITEURL+'/emailverification/'+doc.email_code
       })
 
