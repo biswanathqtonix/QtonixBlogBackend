@@ -38,6 +38,9 @@ const blogsSchema = new Schema({
   metadescription:{
     type:String
   },
+  metakey:{
+    type:String
+  },
   auth_email:{
     type:String
   },

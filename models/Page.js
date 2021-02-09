@@ -17,6 +17,9 @@ const pageSchema = new Schema({
   metadescription:{
     type:String
   },
+  metakey:{
+    type:String
+  },
   pagetype:{
     type:String
   }

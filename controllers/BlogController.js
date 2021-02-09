@@ -134,6 +134,7 @@ const store = (req,res) => {
     blog.content= req.body.content;
     blog.metatitle= req.body.metatitle;
     blog.metadescription= req.body.metadescription;
+    blog.metakey= req.body.metakey;
     blog.auth_email= req.body.auth_email;
     blog.auth_id= req.body.auth_id;
     blog.save((err,doc)=>{
@@ -221,6 +222,7 @@ const update = (req,res) => {
     content: req.body.content,
     metatitle: req.body.metatitle,
     metadescription: req.body.metadescription,
+    metakey: req.body.metakey,
     auth_email: req.body.auth_email,
     auth_id: req.body.auth_id,
   }

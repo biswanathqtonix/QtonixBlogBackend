@@ -73,6 +73,7 @@ const update = (req,res) => {
     content:req.body.content,
     metatitle:req.body.metatitle,
     metadescription:req.body.metadescription,
+    metakey:req.body.metakey,
     // url:url
   }
 
@@ -99,6 +100,7 @@ const store = (req,res) => {
   page.metatitle = req.body.metatitle;
   page.pagetype = req.body.pagetype;
   page.metadescription = req.body.metadescription;
+  page.metakey = req.body.metakey;
   page.save((err,doc)=>{
     if(!err){
       res.json({
