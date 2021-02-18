@@ -13,6 +13,7 @@ const RouteBlog = require('./routes/blog');
 const RouterBlogCategory = require('./routes/blogcategory');
 const RouteMenu = require('./routes/menu');
 const RoutePage = require('./routes/page');
+const GoogleNotification = require('./routes/googlenotification');
 
 //===ROUTE INCLUDE===
 
@@ -66,6 +67,8 @@ app.use('/api/blog',RouteBlog);
 app.use('/api/blogcategory',RouterBlogCategory);
 app.use('/api/menu',RouteMenu);
 app.use('/api/page',RoutePage);
+app.use('/api/googlenotification',GoogleNotification);
+
 //API ROUTES
 
 
